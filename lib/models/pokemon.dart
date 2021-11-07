@@ -3,31 +3,45 @@
 class Pokemon {
   final int id;
   final String name;
-  final int base_experience;
+  final int baseExperience;
   final int height;
-  final bool is_default;
+  final bool isDefault;
   final int order;
   final int weight;
+
+  final Map<String, dynamic> sprites;
+  final List<dynamic> types;
+  final List<dynamic> stats;
+
+
 
   Pokemon({
     required this.id,
     required this.name,
-    required this.base_experience,
+    required this.baseExperience,
     required this.height,
-    required this.is_default,
+    required this.isDefault,
     required this.order,
     required this.weight,
+
+    required this.sprites,
+    required this.types,
+    required this.stats,
   });
 
   factory Pokemon.fromJson(Map<String, dynamic> json) {
     return Pokemon(
       id: json['id'],
       name: json['name'],
-      base_experience: json['base_experience'],
+      baseExperience: json['base_experience'],
       height: json['height'],
-      is_default: json['is_default'],
+      isDefault: json['is_default'],
       order: json['order'],
       weight: json['weight'],
+
+      sprites: json['sprites'],
+      types: json['types'],
+      stats: json['stats'],
     );
   }
 }

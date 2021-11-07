@@ -20,17 +20,16 @@ class Api {
     );
 
     if (response.statusCode == 200) {
-      // แปลง text ที่มีรูปแบบเป็น JSON ไปเป็น Dart's data structure (List/Map)
+
       Map<String, dynamic> jsonBody = json.decode(response.body);
       print('RESPONSE BODY: $jsonBody');
 
-      // แปลง Dart's data structure ไปเป็น model (POJO)
-      var apiResult = Pokemon.fromJson(jsonBody);
+      // var apiResult = ApiPokemonList.fromJson(jsonBody);
 
-      if (apiResult != null) {
-        return apiResult;
+      if (jsonBody != null) {
+        return jsonBody;
       } else {
-        throw apiResult;
+        throw jsonBody;
       }
     } else {
       throw 'Server connection failed!';
@@ -55,12 +54,12 @@ class Api {
 
       // print('RESPONSE BODY: $jsonBody');
 
-      var apiResult = ApiPokemonList.fromJson(jsonBody);
+      // var apiResult = ApiPokemonList.fromJson(jsonBody);
 
       // print(apiResult.results);
 
       if (jsonBody != 'null') {
-        return apiResult.results;
+        return jsonBody;
       } else {
         throw jsonBody;
       }

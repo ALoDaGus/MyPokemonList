@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'pages/home_page.dart';
 import 'pages/pokemon_page.dart';
 import 'pages/pokemonlist_page.dart';
 
@@ -24,11 +25,12 @@ class MyApp extends StatelessWidget {
       
       // home: PokemonListPage(),
       routes: {
+        HomePage.routeName: (context) => HomePage(),
         PokemonListPage.routeName: (context) => PokemonListPage(),
         PokemonPage.routeName: (context) => PokemonPage(),
 
       },
-      initialRoute: PokemonListPage.routeName,
+      initialRoute: HomePage.routeName,
     );
   }
 }
