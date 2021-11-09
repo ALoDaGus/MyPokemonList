@@ -16,16 +16,18 @@ class PokemonPage extends StatefulWidget {
 class _PokemonPageState extends State<PokemonPage> {
   @override
   Widget build(BuildContext context) {
-    var pokemon = ModalRoute.of(context)!.settings.arguments as Pokemon;
+
+    late Pokemon pokemon = ModalRoute.of(context)!.settings.arguments as Pokemon;
+    
     // pokemonName = name;
     // print(pokemon.sprites['back_default']);
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Pokemon'),
+          title: const Text('Pokemon'),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _pokemonImage(pokemon),
             Padding(
@@ -49,17 +51,17 @@ class _PokemonPageState extends State<PokemonPage> {
                 children: [
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         'Weight: ',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text('${pokemon.weight / 10} kg')
                     ],
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         'Height: ',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -69,7 +71,7 @@ class _PokemonPageState extends State<PokemonPage> {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               height: 200.0,
               width: 500.0,
               child: _createBarChart(pokemon),
@@ -79,17 +81,22 @@ class _PokemonPageState extends State<PokemonPage> {
   }
 
   Container _pokemonImage(Pokemon pokemon) {
+    var defultImage = 'images/pokemons/defult_pokemon.png';
     return Container(
       height: 250.0,
       color: Colors.teal[100],
       child: Image.network(
-        pokemon.sprites['front_default'],errorBuilder: (
-                                      BuildContext context,
-                                      Object exception,
-                                      StackTrace? stackTrace,
-                                    ) {
-                                      return Image(image: AssetImage('images/pokemons/defult_pokemon.png'), height: 100,);
-                                    },
+        pokemon.sprites['front_default'] ?? defultImage,
+        errorBuilder: (
+          BuildContext context,
+          Object exception,
+          StackTrace? stackTrace,
+        ) {
+          return Image(
+            image: AssetImage(defultImage),
+            height: 100,
+          );
+        },
         scale: 0.1,
       ),
     );
@@ -120,17 +127,16 @@ class _PokemonPageState extends State<PokemonPage> {
   }
 
   _createBarChart(Pokemon pokemon) {
-
     List<StatBar>? sb = [];
     StatColor sc = StatColor();
 
-    for(Map<String, dynamic> stat in pokemon.stats){
+    for (Map<String, dynamic> stat in pokemon.stats) {
       // print(stat['stat']['name'] + stat['base_stat']);
-      sb.add(StatBar(stat['stat']['name'], stat['base_stat'], sc.getColor(stat['stat']['name'])));
+      sb.add(StatBar(stat['stat']['name'], stat['base_stat'],
+          sc.getColor(stat['stat']['name'])));
     }
 
-    if(sb.length <= 1)
-      return SizedBox.shrink();
+    if (sb.length <= 1) return const SizedBox.shrink();
 
     return charts.BarChart(_createData(sb));
   }

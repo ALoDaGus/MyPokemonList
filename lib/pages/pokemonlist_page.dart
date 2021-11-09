@@ -19,7 +19,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
 
   int currentPage = 1;
   int limit = 1118;
-  int mylimit = 21;
+  int mylimit = 30;
   late int itemCount;
   int offset = 0;
   var _isLoading = false;
@@ -42,8 +42,8 @@ class _PokemonListPageState extends State<PokemonListPage> {
     return myPokemonList;
   }
 
-  Future<Pokemon> _loadPokemonDetail(String name) async {
-    var jsonBody = await Api().fetch('pokemon/$name');
+  Future<Pokemon> _loadPokemonDetail(int id) async {
+    var jsonBody = await Api().fetch('pokemon/$id');
     var myPokemon = Pokemon.fromJson(jsonBody);
 
     setState(() => _isLoading = false);
@@ -66,13 +66,12 @@ class _PokemonListPageState extends State<PokemonListPage> {
         children: [
           Column(
             children: [
-
               Expanded(child: _buildPokemonList(context)),
               _pageSelector(5),
             ],
           ),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(),
             ),
         ],
@@ -111,7 +110,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                           onTap: () {
                             setState(() {
                               _isLoading = true;
-                              _loadPokemonDetail(pokemonList![i].name);
+                              _loadPokemonDetail(pokemonList![i].id);
                             });
                           },
                           child: Card(
@@ -124,13 +123,17 @@ class _PokemonListPageState extends State<PokemonListPage> {
                                 children: [
                                   Text('${pokemonList![i].id}'),
                                   Image.network(
-                                    pokemonList![i].imageUrl,
+                                    pokemonList[i].imageUrl,
                                     errorBuilder: (
                                       BuildContext context,
                                       Object exception,
                                       StackTrace? stackTrace,
                                     ) {
-                                      return Image(image: AssetImage('images/pokemons/defult_pokemon.png'), height: 100,);
+                                      return const Image(
+                                        image: AssetImage(
+                                            'images/pokemons/defult_pokemon.png'),
+                                        height: 100,
+                                      );
                                     },
                                   ),
                                   Text(pokemonList[i].name),
@@ -174,11 +177,10 @@ class _PokemonListPageState extends State<PokemonListPage> {
               : () {
                   setState(() {
                     currentPage = page;
-                    if (currentPage == (limit / mylimit).floor() + 1)
-                      // itemCount = limit - (currentPage - 1) * mylimit;
+                    if (currentPage == (limit / mylimit).floor() + 1) {
                       itemCount = ((mylimit / 3).floor() -
                           ((mylimit * currentPage - limit) / 3).floor());
-                    else
+                    } else
                       itemCount = (mylimit / 3).ceil();
                   });
                 },
@@ -196,8 +198,41 @@ class _PokemonListPageState extends State<PokemonListPage> {
 
     if (end == (limit / mylimit).ceil() + 1) start = end - page;
 
-    return Row(
-      children: [for (int i = start; i < end; i++) _pageButton(i)],
+    var list = [for(int i = 1; i<= (limit/mylimit).ceil(); i++) '$i'];
+    var _chosenValue = '$currentPage';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Row(
+        children: [
+          for (int i = start; i < end; i++)
+            currentPage == i
+                ? DropdownButton<String>(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              value: _chosenValue,
+              elevation: 5,
+              dropdownColor: Colors.teal[100],
+              style: TextStyle(color: Colors.teal[900]),
+
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              
+              onChanged: (String? value) {
+                setState(() {
+                  _chosenValue = value!;
+                  currentPage = int.parse(value);
+                });
+              },
+            )
+          
+            
+                : _pageButton(i),
+        ],
+      ),
     );
   }
 }
