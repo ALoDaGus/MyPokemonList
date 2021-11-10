@@ -91,25 +91,25 @@ _buildDrawerItem(IconData icon, String title, int onFocus) {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Column(
-                children: [
-                  // ClipRRect(
-                  //   borderRadius: BorderRadius.circular(40.0),
-                  //   child: Container(
-                  //     width: 80.0,
-                  //     height: 80.0,
-                  //     child: Container(
+            // DrawerHeader(
+            //   decoration: const BoxDecoration(
+            //     color: Colors.teal,
+            //   ),
+            //   child: Column(
+            //     children: [
+            //       // ClipRRect(
+            //       //   borderRadius: BorderRadius.circular(40.0),
+            //       //   child: Container(
+            //       //     width: 80.0,
+            //       //     height: 80.0,
+            //       //     child: Container(
 
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
-            ),
+            //       //     ),
+            //       //   ),
+            //       // ),
+            //     ],
+            //   ),
+            // ),
             ListTile(
               title: _buildDrawerItem(
                   Icons.camera_front_sharp,
