@@ -27,7 +27,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
   @override
   void initState() {
     super.initState();
-    itemCount = (mylimit / 3).ceil();
+    itemCount = mylimit;
     _futurePokemonList = _loadPokemons();
   }
 
@@ -92,59 +92,53 @@ class _PokemonListPageState extends State<PokemonListPage> {
         if (snapshot.hasData) {
           var pokemonList = snapshot.data;
 
-          return ListView.builder(
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisExtent: 180.0,
+            ),
             shrinkWrap: true,
             padding: const EdgeInsets.all(8.0),
             itemCount: itemCount,
             itemBuilder: (BuildContext context, int index) {
-              int start = (3 * index) + (currentPage - 1) * mylimit;
-              int end = start + 3 > limit ? limit : start + 3;
+              int myIndex = index + (mylimit * (currentPage - 1));
 
-              return Row(
-                children: [
-                  for (int i = start; i < end; i++)
-                    Expanded(
-                      child: SizedBox(
-                        // height: 200.0,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              _isLoading = true;
-                              _loadPokemonDetail(pokemonList![i].id);
-                            });
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    _isLoading = true;
+                    _loadPokemonDetail(pokemonList![myIndex].id);
+                  });
+                },
+                child: Card(
+                  shadowColor: Colors.teal,
+                  elevation: 3.0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: ListView(
+                      // itemExtent: 20.0,
+                      children: [
+                        Center(child: Text('${pokemonList![myIndex].id}')),
+                        Image.network(
+                          pokemonList[myIndex].imageUrl,
+                          height: 100.0,
+                          errorBuilder: (
+                            BuildContext context,
+                            Object exception,
+                            StackTrace? stackTrace,
+                          ) {
+                            return const Image(
+                              image: AssetImage(
+                                  'images/pokemons/defult_pokemon.png'),
+                              // height: 100,
+                            );
                           },
-                          child: Card(
-                            shadowColor: Colors.teal,
-                            elevation: 3.0,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: Column(
-                                children: [
-                                  Text('${pokemonList![i].id}'),
-                                  Image.network(
-                                    pokemonList[i].imageUrl,
-                                    errorBuilder: (
-                                      BuildContext context,
-                                      Object exception,
-                                      StackTrace? stackTrace,
-                                    ) {
-                                      return const Image(
-                                        image: AssetImage(
-                                            'images/pokemons/defult_pokemon.png'),
-                                        height: 100,
-                                      );
-                                    },
-                                  ),
-                                  Text(pokemonList[i].name),
-                                ],
-                              ),
-                            ),
-                          ),
                         ),
-                      ),
+                        Center(child: Text(pokemonList[myIndex].name)),
+                      ],
                     ),
-                ],
+                  ),
+                ),
               );
             },
           );
@@ -175,17 +169,22 @@ class _PokemonListPageState extends State<PokemonListPage> {
           onPressed: currentPage == page
               ? null
               : () {
-                  setState(() {
-                    currentPage = page;
-                    if (currentPage == (limit / mylimit).floor() + 1) {
-                      itemCount = ((mylimit / 3).floor() -
-                          ((mylimit * currentPage - limit) / 3).floor());
-                    } else
-                      itemCount = (mylimit / 3).ceil();
-                  });
+                  _changePage(page);
                 },
           child: Text('${page}')),
     ));
+  }
+
+  _changePage(int page) {
+    setState(() {
+      currentPage = page;
+      if (currentPage == (limit / mylimit).floor() + 1) {
+        itemCount =
+            ((mylimit).floor() - ((mylimit * currentPage - limit)).floor());
+      } else {
+        itemCount = mylimit;
+      }
+    });
   }
 
   _pageSelector(int page) {
@@ -198,7 +197,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
 
     if (end == (limit / mylimit).ceil() + 1) start = end - page;
 
-    var list = [for(int i = 1; i<= (limit/mylimit).ceil(); i++) '$i'];
+    var list = [for (int i = 1; i <= (limit / mylimit).ceil(); i++) '$i'];
     var _chosenValue = '$currentPage';
 
     return Padding(
@@ -207,32 +206,33 @@ class _PokemonListPageState extends State<PokemonListPage> {
         children: [
           for (int i = start; i < end; i++)
             currentPage == i
-                ? DropdownButton<String>(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              value: _chosenValue,
-              elevation: 5,
-              dropdownColor: Colors.teal[100],
-              style: TextStyle(color: Colors.teal[900]),
-
-              items: list.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              
-              onChanged: (String? value) {
-                setState(() {
-                  _chosenValue = value!;
-                  currentPage = int.parse(value);
-                });
-              },
-            )
-          
-            
+                ? myDropdownButton(_chosenValue, list)
                 : _pageButton(i),
         ],
       ),
+    );
+  }
+
+  DropdownButton<String> myDropdownButton(
+      String _chosenValue, List<String> list) {
+    return DropdownButton<String>(
+      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+      value: _chosenValue,
+      elevation: 5,
+      dropdownColor: Colors.teal[100],
+      style: TextStyle(color: Colors.teal[900]),
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (String? value) {
+        setState(() {
+          _chosenValue = value!;
+          _changePage(int.parse(_chosenValue));
+        });
+      },
     );
   }
 }

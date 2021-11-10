@@ -20,7 +20,7 @@ _buildDrawerItem(IconData icon, String title, int onFocus) {
     return Row(
       children: [
         Icon(icon, color: _subPageIndex==onFocus ? Colors.blue : null),
-        SizedBox(width: 8.0),
+        const SizedBox(width: 8.0),
         Text(
           title,
           style: _subPageIndex == onFocus
@@ -56,61 +56,61 @@ _buildDrawerItem(IconData icon, String title, int onFocus) {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: Colors.blue,
-        title: Text('My Pokemon List'),
-        actions: [
-          IconButton(
-            onPressed: (){},
-            icon: Icon(Icons.search),
-          ),
-          IconButton(
-            onPressed: (){},
-            icon: Icon(Icons.refresh),
-          ),
-        ],
+        title: const Text('My Pokemon List'),
+        // actions: [
+        //   IconButton(
+        //     onPressed: (){},
+        //     icon: const Icon(Icons.search),
+        //   ),
+        //   IconButton(
+        //     onPressed: (){},
+        //     icon: const Icon(Icons.refresh),
+        //   ),
+        // ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Column(
-                children: [
-                  // ClipRRect(
-                  //   borderRadius: BorderRadius.circular(40.0),
-                  //   child: Container(
-                  //     width: 80.0,
-                  //     height: 80.0,
-                  //     child: Container(
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: [
+      //       DrawerHeader(
+      //         decoration: const BoxDecoration(
+      //           color: Colors.teal,
+      //         ),
+      //         child: Column(
+      //           children: [
+      //             // ClipRRect(
+      //             //   borderRadius: BorderRadius.circular(40.0),
+      //             //   child: Container(
+      //             //     width: 80.0,
+      //             //     height: 80.0,
+      //             //     child: Container(
 
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
-            ),
-            ListTile(
-              title: _buildDrawerItem(
-                  Icons.catching_pokemon,
-                  'Pokemon list', 0
-              ),
-              onTap: (){
-                _showSubPage(context, 0);
-              },
-            ),
-            ListTile(
-              title: _buildDrawerItem(
-                  Icons.accessibility_new,
-                  'Ability list', 1
-              ),
-              onTap: () => _showSubPage(context, 1),
-            ),
-          ],
+      //             //     ),
+      //             //   ),
+      //             // ),
+      //           ],
+      //         ),
+      //       ),
+      //       ListTile(
+      //         title: _buildDrawerItem(
+      //             Icons.catching_pokemon,
+      //             'Pokemon list', 0
+      //         ),
+      //         onTap: (){
+      //           _showSubPage(context, 0);
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: _buildDrawerItem(
+      //             Icons.accessibility_new,
+      //             'Ability list', 1
+      //         ),
+      //         onTap: () => _showSubPage(context, 1),
+      //       ),
+      //     ],
 
-        ),
-      ),
+      //   ),
+      // ),
       body: _currentPage,
     );
   }
