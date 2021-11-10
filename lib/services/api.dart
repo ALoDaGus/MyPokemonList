@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:my_pokemon_list/models/pokemon.dart';
 import 'package:my_pokemon_list/models/apipokemon_list.dart';
-import 'package:my_pokemon_list/pages/pokemonlist_page.dart';
+import 'package:my_pokemon_list/pages/list_page.dart';
 
 class Api {
   static const BASE_URL = 'https://pokeapi.co/api/v2';

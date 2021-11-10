@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_pokemon_list/pages/item_page.dart';
 
 import 'pages/home_page.dart';
 import 'pages/pokemon_page.dart';
-import 'pages/pokemonlist_page.dart';
+import 'pages/list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         HomePage.routeName: (context) => HomePage(),
         PokemonListPage.routeName: (context) => PokemonListPage(),
         PokemonPage.routeName: (context) => PokemonPage(),
+        ItemPage.routeName: (context) => ItemPage(),
 
       },
       initialRoute: HomePage.routeName,

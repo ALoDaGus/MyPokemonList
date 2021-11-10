@@ -71,6 +71,9 @@ class _PokemonPageState extends State<PokemonPage> {
                 ],
               ),
             ),
+            Center(
+              child: Text('Stats', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),)
+            ),
             SizedBox(
               height: 200.0,
               width: 500.0,

@@ -1,5 +1,3 @@
-// import 'dart:isolate';
-
 class Pokemon {
   final int id;
   final String name;
