@@ -5,7 +5,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:my_pokemon_list/models/stats_color.dart';
 
 class PokemonPage extends StatefulWidget {
-  PokemonPage({Key? key}) : super(key: key);
+  const PokemonPage({Key? key}) : super(key: key);
 
   static const routeName = '/Pokemon';
 
@@ -16,18 +16,14 @@ class PokemonPage extends StatefulWidget {
 class _PokemonPageState extends State<PokemonPage> {
   @override
   Widget build(BuildContext context) {
-
-    late Pokemon pokemon = ModalRoute.of(context)!.settings.arguments as Pokemon;
-    
-    // pokemonName = name;
-    // print(pokemon.sprites['back_default']);
+    late Pokemon pokemon =
+        ModalRoute.of(context)!.settings.arguments as Pokemon;
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Pokemon'),
         ),
         body: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _pokemonImage(pokemon),
             Padding(
@@ -71,9 +67,11 @@ class _PokemonPageState extends State<PokemonPage> {
                 ],
               ),
             ),
-            Center(
-              child: Text('Stats', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),)
-            ),
+            const Center(
+                child: Text(
+              'Stats',
+              style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+            )),
             SizedBox(
               height: 200.0,
               width: 500.0,
@@ -151,34 +149,12 @@ class _PokemonPageState extends State<PokemonPage> {
       charts.Series<StatBar, String>(
         id: 'Stats',
         data: data,
-        // seriesColor: charts.ColorUtil.fromDartColor(Colors.teal),
         domainFn: (StatBar stats, _) => stats.name,
         measureFn: (StatBar stats, _) => stats.value,
         colorFn: (StatBar stats, _) => stats.color!,
       )
     ];
   }
-
-  // _buildPokemonDetail(BuildContext context) {
-  //   return FutureBuilder<List<Pokemon>>(
-  //     future: _futurePokemon,
-  //     builder: (context, snapshot) {
-
-  //       if (snapshot.connectionState != ConnectionState.done){
-  //         return const Center(child: CircularProgressIndicator(),);
-  //       }
-
-  //       if (snapshot.hasData){
-  //         var pokemon = snapshot.data;
-
-  //         return Container(
-  //           child: Text(pokemon.),
-  //         )
-  //       }
-
-  //     },
-  //   );
-  // }
 }
 
 class StatBar {

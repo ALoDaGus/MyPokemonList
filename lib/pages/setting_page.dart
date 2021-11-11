@@ -9,10 +9,10 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  @override
     int columnPerPage =
         (PokemonListPage.myLimit / PokemonListPage.itemPerCollumn).ceil();
     int itemPerCollumn = PokemonListPage.itemPerCollumn;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(

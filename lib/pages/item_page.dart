@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_pokemon_list/models/item_detail.dart';
 
 class ItemPage extends StatefulWidget {
-  ItemPage({Key? key}) : super(key: key);
+  const ItemPage({Key? key}) : super(key: key);
 
   static const routeName = '/Item';
 
@@ -13,19 +13,14 @@ class ItemPage extends StatefulWidget {
 class _ItemPageState extends State<ItemPage> {
   @override
   Widget build(BuildContext context) {
-
-    late ItemDetail pageItem = ModalRoute.of(context)!.settings.arguments as ItemDetail;
-    
-    // pokemonName = name;
-    // print(pageItem.sprites['back_default']);
+    late ItemDetail pageItem =
+        ModalRoute.of(context)!.settings.arguments as ItemDetail;
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Item'),
         ),
-        body: 
-        ListView(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: ListView(
           children: [
             _pokemonImage(pageItem),
             Padding(
@@ -41,8 +36,7 @@ class _ItemPageState extends State<ItemPage> {
               child: Center(child: Text(pageItem.details)),
             )
           ],
-        )
-    );
+        ));
   }
 
   Container _pokemonImage(ItemDetail pageItem) {
@@ -66,6 +60,4 @@ class _ItemPageState extends State<ItemPage> {
       ),
     );
   }
-
-
 }

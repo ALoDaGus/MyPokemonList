@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_pokemon_list/models/apipokemon_list.dart';
 import 'package:my_pokemon_list/models/item_detail.dart';
 import 'package:my_pokemon_list/models/item_list.dart';
 import 'package:my_pokemon_list/models/pokemon.dart';
-import 'package:my_pokemon_list/models/pokimon_list.dart';
+import 'package:my_pokemon_list/models/pokemon_list.dart';
 import 'package:my_pokemon_list/pages/item_page.dart';
 import 'package:my_pokemon_list/pages/pokemon_page.dart';
 import 'package:my_pokemon_list/services/api.dart';
@@ -27,8 +26,6 @@ class _PokemonListPageState extends State<PokemonListPage> {
   late Future<List<dynamic>> _futureItemList;
   late Future<List<dynamic>> _futurePokemonList;
 
-  // late int PokemonListPage.myLimit = 30;
-  // late int PokemonListPage.currentPage = 1;
   late int limit;
 
   final int offset = 0;
@@ -40,82 +37,54 @@ class _PokemonListPageState extends State<PokemonListPage> {
   void initState() {
     super.initState();
     itemCount = PokemonListPage.myLimit;
-    _futurePokemonList = _loadPokemons();
-    _futureItemList = _loadItemList();
+    _futurePokemonList = _loadPokemons(1118, true);
+    _futureItemList = _loadPokemons(954, false);
   }
 
-  Future<List<PokemonList>> _loadPokemons() async {
-    limit = 1118;
-    var jsonBody = await Api().fetch('pokemon',
+  Future<List<dynamic>> _loadPokemons(int limit, bool check) async {
+    Map<String, dynamic> jsonBody = await Api().fetch(
+        check ? 'pokemon' : 'item',
         queryParams: {'limit': '$limit', 'offset': '$offset'});
 
-    List apiResult = ApiPokemonList.fromJson(jsonBody).results;
-
-    var myPokemonList =
-        apiResult.map((item) => PokemonList.fromJson(item)).toList();
-    return myPokemonList;
-  }
-
-  Future<List<ItemList>> _loadItemList() async {
-    limit = 954;
-    Map<String, dynamic> jsonBody = await Api()
-        .fetch('item', queryParams: {'limit': '$limit', 'offset': '$offset'});
-
-    List<ItemList> myItem = [];
+    List<dynamic> myItem = [];
     for (Map<String, dynamic> list in jsonBody['results']) {
-      myItem.add(ItemList.fromJson(list));
+      myItem.add(check ? PokemonList.fromJson(list) : ItemList.fromJson(list));
     }
+
     return myItem;
   }
 
-  _loadPokemonDetail(int id) async {
-    var jsonBody = await Api().fetch('pokemon/$id');
-    var myPokemon = Pokemon.fromJson(jsonBody);
+  _loadDetail(int id, String s) async {
+    var jsonBody = await Api().fetch('$s/$id');
+    var myPokemon = s == 'pokemon'
+        ? Pokemon.fromJson(jsonBody)
+        : ItemDetail.fromJson(jsonBody);
 
     setState(() => _isLoading = false);
-
-    Navigator.pushNamed(context, PokemonPage.routeName, arguments: myPokemon);
-
-    return myPokemon;
-  }
-
-  _loadItemDetail(int id) async {
-    var jsonBody = await Api().fetch('item/$id');
-    var myPokemon = ItemDetail.fromJson(jsonBody);
-
-    setState(() => _isLoading = false);
-
-    Navigator.pushNamed(context, ItemPage.routeName, arguments: myPokemon);
+    Navigator.pushNamed(
+        context, s == 'pokemon' ? PokemonPage.routeName : ItemPage.routeName,
+        arguments: myPokemon);
 
     return myPokemon;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (PokemonListPage.page == 'pokemon') {
 
-    if(PokemonListPage.page == 'pokemon'){
       _futurePageList = _futurePokemonList;
       limit = 1118;
-    }
-    else{
+    } else {
       _futurePageList = _futureItemList;
       limit = 954;
     }
-    // _futurePokemonList =
-    //     PokemonListPage.page == 'pokemon' ? _loadPokemons() : _loadItemList();
     return Scaffold(
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu')
-      //   ],
-      // ),
       body: Stack(
         children: [
           Column(
             children: [
               Expanded(child: _buildPokemonList(context)),
-              _pageSelector(5),
+              _pageSelector(7),
             ],
           ),
           if (_isLoading)
@@ -149,15 +118,16 @@ class _PokemonListPageState extends State<PokemonListPage> {
             padding: const EdgeInsets.all(8.0),
             itemCount: itemCount,
             itemBuilder: (BuildContext context, int index) {
-              int myIndex = index + (PokemonListPage.myLimit * (PokemonListPage.currentPage - 1));
+              int myIndex = index +
+                  (PokemonListPage.myLimit * (PokemonListPage.currentPage - 1));
 
               return InkWell(
                 onTap: () {
                   setState(() {
                     _isLoading = true;
-                    PokemonListPage.page == 'pokemon'
-                        ? _loadPokemonDetail(pokemonList![myIndex].id)
-                        : _loadItemDetail(pokemonList![myIndex].id);
+
+                    _loadDetail(pokemonList![myIndex].id,
+                        PokemonListPage.page == 'pokemon' ? 'pokemon' : 'item');
                   });
                 },
                 child: Card(
@@ -180,7 +150,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                             return const Image(
                               image: AssetImage(
                                   'images/pokemons/defult_pokemon.png'),
-                              // height: 100,
+                              height: 120,
                             );
                           },
                         ),
@@ -203,14 +173,6 @@ class _PokemonListPageState extends State<PokemonListPage> {
     );
   }
 
-  // String getImage(String url) {
-  //   String id = url.substring(
-  //       url.substring(0, url.length - 1).lastIndexOf('/') + 1, url.length - 1);
-  //   var front_defult =
-  //       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png';
-  //   return front_defult;
-  // }
-
   _pageButton(int page) {
     return Expanded(
         child: Padding(
@@ -221,16 +183,18 @@ class _PokemonListPageState extends State<PokemonListPage> {
               : () {
                   _changePage(page);
                 },
-          child: Text('${page}')),
+          child: Text('$page')),
     ));
   }
 
   _changePage(int page) {
     setState(() {
       PokemonListPage.currentPage = page;
-      if (PokemonListPage.currentPage == (limit / PokemonListPage.myLimit).floor() + 1) {
-        itemCount =
-            ((PokemonListPage.myLimit).floor() - ((PokemonListPage.myLimit * PokemonListPage.currentPage - limit)).floor());
+      if (PokemonListPage.currentPage ==
+          (limit / PokemonListPage.myLimit).floor() + 1) {
+        itemCount = ((PokemonListPage.myLimit).floor() -
+            ((PokemonListPage.myLimit * PokemonListPage.currentPage - limit))
+                .floor());
       } else {
         itemCount = PokemonListPage.myLimit;
       }
@@ -238,8 +202,9 @@ class _PokemonListPageState extends State<PokemonListPage> {
   }
 
   _pageSelector(int page) {
-    int start =
-        PokemonListPage.currentPage - page / 2 <= 1 ? 1 : PokemonListPage.currentPage - (page / 2).floor();
+    int start = PokemonListPage.currentPage - page / 2 <= 1
+        ? 1
+        : PokemonListPage.currentPage - (page / 2).floor();
 
     int end = start + page > (limit / PokemonListPage.myLimit).ceil()
         ? (limit / PokemonListPage.myLimit).ceil() + 1
@@ -247,7 +212,9 @@ class _PokemonListPageState extends State<PokemonListPage> {
 
     if (end == (limit / PokemonListPage.myLimit).ceil() + 1) start = end - page;
 
-    var list = [for (int i = 1; i <= (limit / PokemonListPage.myLimit).ceil(); i++) '$i'];
+    var list = [
+      for (int i = 1; i <= (limit / PokemonListPage.myLimit).ceil(); i++) '$i'
+    ];
     var _chosenValue = '${PokemonListPage.currentPage}';
 
     return Padding(
@@ -263,8 +230,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
     );
   }
 
-  DropdownButton<String> myDropdownButton(
-      String _chosenValue, List<String> list) {
+  DropdownButton myDropdownButton(String _chosenValue, List<String> list) {
     return DropdownButton<String>(
       borderRadius: const BorderRadius.all(Radius.circular(10.0)),
       value: _chosenValue,

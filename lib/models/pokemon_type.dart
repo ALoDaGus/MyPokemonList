@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PokemonType {
-
-  // ignore: prefer_final_fields
-  Map<String, Color> _typeColor = {
+  final Map<String, Color> _typeColor = {
     'normal': Colors.grey,
     'fighting': Colors.red.shade900,
     'flying': Colors.purple.shade100,
@@ -24,15 +22,9 @@ class PokemonType {
     'fairy': Colors.pink.shade200,
     'unknow': Colors.cyan.shade900,
     'shadow': Colors.brown.shade200,
-
   };
 
-  PokemonType() {
-    
-  }
-
-  Color? getColor(String color){
+  Color? getColor(String color) {
     return _typeColor[color];
   }
-
 }

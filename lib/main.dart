@@ -24,12 +24,11 @@ class MyApp extends StatelessWidget {
             bodyText2: TextStyle(fontSize: 18.0)),
       ),
       
-      // home: PokemonListPage(),
       routes: {
-        HomePage.routeName: (context) => HomePage(),
+        HomePage.routeName: (context) => const HomePage(),
         PokemonListPage.routeName: (context) => PokemonListPage(),
-        PokemonPage.routeName: (context) => PokemonPage(),
-        ItemPage.routeName: (context) => ItemPage(),
+        PokemonPage.routeName: (context) => const PokemonPage(),
+        ItemPage.routeName: (context) => const ItemPage(),
 
       },
       initialRoute: HomePage.routeName,
